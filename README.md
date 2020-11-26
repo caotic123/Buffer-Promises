@@ -78,7 +78,7 @@ await r.map((value, generator) => value == null ? generator() : value)
 
 This overwrite the requisition already loaded and return a new if the value is not valid.
 
-# INTEFACE 
+# Interface 
 
 ```js
   start() // Starts the queue
