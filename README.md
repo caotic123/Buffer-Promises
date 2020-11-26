@@ -15,20 +15,79 @@ BUFFER_SIZE is a the size of buffer, that means the library will save the maximu
 For example :
 
 ```js
+async function sync() {
   let counter = 1
-  let list = []
-  const r = new StriclyOrdenedPromise(10, () =>  justAwait(1000, () => list.push(counter++)))
-  await justWait(5000, () => {
-      console.log("Five requistions )
+  const r = new StriclyOrdenedPromise(10, () =>  justAwait(10000, () => counter++))
+  r.start()
+  
+  // WAIT FOR 5 (OR LESS) BUFFERS 
+  await justAwait(5*10000, () => {
+    console.log("Now, the buffer have 5 requistions already loaded")
   })
-  for (let x=1; x <= 10; x++) {
-    await r.next()
+
+  // *Probably* prints without waiting
+  for (let x=1; x <= 5; x++) {
+    console.log(await r.next())
   }
 
-  console.log(list)
-  // OUTPUT [1, 2, 3, 4,  5, 6, 7, 8, 9, 10]
+    // PROBABLY WILL NEED 50000 SECONDS TO PRINT
+  for (let x=1; x <= 5; x++) {
+    console.log(await r.next())
+  }
 }
+sync()
 
 ```
 
-You might notice that ouput is synchronous, that means every requisition is requested if and only if the last requisition is finished. Normally buffers needs to be synchronous, 
+You might notice that ouput is synchronous, that means every requisition is requested if and only if the last requisition is finished. Normally buffers needs to be synchronous, once they can depends of each other. 
+
+You can create asynchronous generators just returning a Promise resolved :
+
+```js
+  const r = new StriclyOrdenedPromise(10, () => {
+      return Promise.resolve(justAwait(10000, () => counter++))
+  })
+
+  const promise = await r.next() // The promise unloaded
+  console.log(await promise) // Now, waits until the 10000 seconds is finished
+```
+
+# Reloading a buffer
+
+If you need reload the whole buffer you can just map and return the generator again :
+
+```js
+const r = new StriclyOrdenedPromise(10, () => axios.get("http://...", {})
+await justAwait(10000, () => {
+    console.log("10 seconds have passed")
+})
+
+await r.map((value, generator) => generator()) //RESETS ALL BUFFER AND REQUEST FOR EACH BUFFER LOADED
+```
+
+Mapping stops the queue first before of perfoming a mapping to avoid race problems.
+Optionally maybe you do not want to reload all buffers but just the failed promises 
+
+```js
+await r.map((value, generator) => value == null ? generator() : value)
+```
+
+This overwrite the requisition already loaded and return a new if the value is not valid.
+
+# PromisseQueue
+
+The PromisseQueue is a internal class of StriclyOrdenedPromise, PromisseQueue don't have a buffer but always executes synchronously the promise:
+
+```js
+  const queue = new PromisseQueue()
+  queue.add.add_to_queue(() => justAwait(10000, () => console.log("first")))
+  const last = new Promise(resolve => queue.add.add_to_queue(() => justAwait(1, () => {
+      console.log("second")
+      resolve()
+  })))
+  queue.get_all_processes()
+  await last() //after waiting 10000 seconds prints "first" and finally prints "second"
+
+```
+
+
