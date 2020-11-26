@@ -1,4 +1,4 @@
-export class PromisseQueue {
+class PromisseQueue {
 
     constructor() {
         this.list = []
@@ -52,7 +52,7 @@ export class PromisseQueue {
 
 }
 
-export class StriclyOrdenedPromise {
+class StriclyOrdenedPromise {
 
     constructor(buffered, generator, onLoadingBuffer) {
 
@@ -146,4 +146,9 @@ export class StriclyOrdenedPromise {
         this.state.cancelled = false
         this.order = []
     }
+}
+
+module.exports = {
+    PromisseQueue : PromisseQueue,
+    StriclyOrdenedPromise : StriclyOrdenedPromise
 }

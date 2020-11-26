@@ -1,0 +1,24 @@
+{
+  "name": "@caotic/bufferpromisse",
+  "version": "1.0.0",
+  "description": "A simple library to provide a buffer for promises",
+  "main": "buffer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caotic123/Buffer-Promises.git"
+  },
+  "keywords": [
+    "buffer",
+    "loading",
+    "promises"
+  ],
+  "author": "caotic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caotic123/Buffer-Promises/issues"
+  },
+  "homepage": "https://github.com/caotic123/Buffer-Promises#readme"
+}
