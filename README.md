@@ -15,6 +15,10 @@ BUFFER_SIZE is the size of buffer, that means the library will save the maximum 
 For example :
 
 ```js
+const justAwait = (time, action) => {
+    return new Promise(resolve => setTimeout(() => resolve(action()), time))
+}
+
 async function sync() {
   let counter = 1
   const r = new StriclyOrdenedPromise(10, () =>  justAwait(10000, () => counter++))
