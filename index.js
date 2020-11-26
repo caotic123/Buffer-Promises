@@ -98,7 +98,7 @@ class StriclyOrdenedPromise {
     }
 
     next() {
-        if (this.order.length <= this.buffer) {
+        if (this.order.length < 1) {
             const promise = new Promise(async resolve => {
                 this.queue.push(async () => {
                     resolve((await this.order.shift()))

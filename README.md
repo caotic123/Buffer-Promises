@@ -1,6 +1,6 @@
 # Buffer-Promises
 
-Buffer-promises is a simple implementation of buffer using promises as generators. The goal is to preload a amount of data to request after, for example if you're doing pagination but you do not want to request all full data, neither request information as the user still playing your app.
+Buffer-promises is a simple implementation of buffer using promises as generators. The goal is to preload a amount of data to request after, for example if you're doing pagination but you do not want to request all full data, neither request information while the user still playing your app.
 
 
 # Loading a generator
@@ -10,7 +10,7 @@ To create a instance just import the StriclyOrdenedPromise and call the construc
 const my_instance = new StriclyOrdenedPromise<T>(BUFFER_SIZE : number, GENERATOR : () => Promise<T>)
 ```
 
-BUFFER_SIZE is a the size of buffer, that means the library will save the maximum of BUFFER_SIZE. Everytime that you request a value of the queue the StriclyOrdenedPromise will load the amount of buffer which was taked. The queue always will try to be full (full in that case it is the size of BUFFER_SIZE properly).
+BUFFER_SIZE is the size of buffer, that means the library will save the maximum of BUFFER_SIZE. Everytime that you request a value of the queue the StriclyOrdenedPromise will load the amount of buffer which was taked. The queue always will try to be full (full in that case it is the size of BUFFER_SIZE properly).
 
 For example :
 
@@ -65,7 +65,7 @@ await justAwait(10000, () => {
 await r.map((value, generator) => generator()) //RESETS ALL BUFFER AND REQUEST FOR EACH BUFFER LOADED
 ```
 
-Mapping stops the queue first before of perfoming a mapping to avoid race problems.
+Mapping stops the queue before of perfoming a mapping to avoid race problems.
 Optionally maybe you do not want to reload all buffers but just the failed promises 
 
 ```js
