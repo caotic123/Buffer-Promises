@@ -93,6 +93,10 @@ class StriclyOrdenedPromise {
         }
     }
 
+    start() {
+        this.state.retrigger()
+    }
+
     next() {
         if (this.order.length <= this.buffer) {
             const promise = new Promise(async resolve => {
