@@ -78,6 +78,16 @@ await r.map((value, generator) => value == null ? generator() : value)
 
 This overwrite the requisition already loaded and return a new if the value is not valid.
 
+# INTEFACE 
+
+```js
+  start() // Starts the queue
+  async next() // Request a value (starts the queue if is empty)
+  async clear() // Throw away all the buffer
+  async map<T>(f : (value : T, generator : () => Promise<T>) => T) //maps the buffer avaliable
+  set_max_buffer(BUFFER_SIZE : number) // set a new limit to buffer
+```
+
 # PromisseQueue
 
 The PromisseQueue is a internal class of StriclyOrdenedPromise, PromisseQueue don't have a buffer but always executes synchronously the promise:
