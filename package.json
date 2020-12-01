@@ -1,8 +1,8 @@
 {
   "name": "@caotic/bufferpromisse",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A simple library to provide a buffer for promises",
-  "main": "buffer.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
