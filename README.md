@@ -6,7 +6,7 @@ Buffer-promises is a simple implementation of buffer using promises as generator
 
 To create a instance just import the StriclyOrdenedPromise and call the constructor.
 ```js
-const {StriclyOrdenedPromise} = require("./index.js")
+const {StriclyOrdenedPromise} = require("@caotic/bufferpromisse")
 const my_instance = new StriclyOrdenedPromise<T>(BUFFER_SIZE : number, GENERATOR : () => Promise<T>)
 ```
 
@@ -15,7 +15,7 @@ BUFFER_SIZE is the size of buffer, that means the library will save the maximum 
 For example :
 
 ```js
-const {StriclyOrdenedPromise} = require("./index.js")
+const {StriclyOrdenedPromise} = require("@caotic/bufferpromisse")
 
 const justAwait = (time, action) => {
     return new Promise(resolve => setTimeout(() => resolve(action()), time))
@@ -130,7 +130,7 @@ The PromisseQueue is a internal class of StriclyOrdenedPromise, PromisseQueue do
 
 For example :
 ```js
-  const {PromisseQueue} = require("./index.js")
+  const {PromisseQueue} = require("@caotic/bufferpromisse")
   const queue = new PromisseQueue()
   queue.add.add_to_queue(() => justAwait(10000, () => console.log("first")))
   const last = queue.add.add_and_run(() => justAwait(1, () => {
