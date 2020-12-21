@@ -6,8 +6,17 @@ class PromisseQueue {
         this.running = false
     }
 
-    add_to_queue(promise) {
+    async add_to_queue(promise) {
         this.list.push(promise)
+    }
+
+    async add_and_run(promise) {
+        const call = new Promise(resolve => {
+            this.list.push(async () => resolve(await promise()))
+        })
+
+        this.get_all_processes()
+        return call
     }
 
     get_all_processes() {
@@ -77,6 +86,7 @@ class StriclyOrdenedPromise {
         this.buffer = buffered
         this.queue = []
         this.generator = generator
+        this.processes = new PromisseQueue()
         this.analyzer = onLoadingBuffer == null ? () => new Promise(resolve => resolve()) : onLoadingBuffer
         this.state = {
             running: false,
@@ -98,27 +108,29 @@ class StriclyOrdenedPromise {
     }
 
     next() {
-        if (this.order.length < 1) {
-            const promise = new Promise(async resolve => {
-                this.queue.push(async () => {
-                    resolve((await this.order.shift()))
+        return this.processes.add_and_run(async () => {
+            if (this.order.length < 1) {
+                const promise = new Promise(async resolve => {
+                    this.queue.push(async () => {
+                        resolve((await this.order.shift()))
+                    })
                 })
-            })
+
+                this.state.retrigger()
+                return promise
+            }
 
             this.state.retrigger()
-            return promise
-        }
-
-        this.state.retrigger()
-        return this.order.shift()
+            return this.order.shift()
+        })
     }
 
     set_max_buffer(max) {
         this.buffer = max
     }
 
-    async map(f) {
-        const updatePromises = async () => {
+    map(f) {
+        const updatePromises = async (queue) => {
             for (let i = 0; i <= this.order.length - 1; i++) {
                 const promise = this.order[i]
                 this.order[i] = new Promise(resolve => {
@@ -135,11 +147,11 @@ class StriclyOrdenedPromise {
             this.state.retrigger()
         }
 
-        const queue = new PromisseQueue()
-        this.state.cancelled = true
-        await this.promise
-        updatePromises()
-
+        return this.processes.add_and_run(async () => {
+            this.state.cancelled = true
+            await this.promise
+            updatePromises(new PromisseQueue())
+        })
     }
 
     async clear() {
@@ -153,6 +165,6 @@ class StriclyOrdenedPromise {
 }
 
 module.exports = {
-    PromisseQueue : PromisseQueue,
-    StriclyOrdenedPromise : StriclyOrdenedPromise
+    PromisseQueue: PromisseQueue,
+    StriclyOrdenedPromise: StriclyOrdenedPromise
 }
